@@ -37,10 +37,60 @@ function CellClick(clickedCellEvent) {
     return;
   }
   CellPlayed(clickedCell, clickedCellIndex);
+  ResultValidations();
 }
-
 
 function CellPlayed(clickedCell, clickedCellIndex) {
   gameState[clickedCellIndex] = currentPlayer;
   clickedCell.innerHTML = currentPlayer;
+}
+
+statusDisplay.innerHTML = currentPlayerTurn();
+
+function PlayerChange() {
+  if (currentPlayer === "X") {
+    currentPlayer = "O";
+  } else {
+    currentPlayer = "X";
+  }
+  statusDisplay.innerHTML = currentPlayerTurn();
+}
+
+function ResultValidations(params) {
+  let roundWon = false;
+  for (let i = 0; i <= 7; i++) {
+    const winCondition = winningConditions[i];
+    let a = gameState[winCondition[0]];
+    let b = gameState[winCondition[1]];
+    let c = gameState[winCondition[2]];
+    if (a === '' || b === '' || c === '') {
+      continue;
+    }
+    if (a === b && b === c) {
+      roundWon = true;
+      break;
+    }
+  }
+  if (roundWon) {
+    statusDisplay.innerHTML = winningMessage();
+    gameActive = false;
+    return;
+  }
+  let roundDraw = !gameState.includes("");
+  if (roundDraw) {
+    statusDisplay.innerHTML = drawMessage();
+    gameActive = false;
+    return;
+  }
+  PlayerChange();
+}
+
+function RestartGame() {
+  let gameActive = true;
+  let currentPlayer = "X";
+  let gameState = ["", "", "", "", "", "", "", "", ""];
+  statusDisplay.innerHTML = currentPlayerTurn();
+  document.querySelectorAll('.cell').forEach(function(cell){
+     cell.innerHTML = '';
+  });
 }
